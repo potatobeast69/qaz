@@ -183,7 +183,17 @@ jobs:
 
       - name: 🔧 Установка Periphery
         run: |
-          brew install peripheryapp/periphery/periphery
+          # Устанавливаем Periphery 3.x напрямую из GitHub releases
+          PERIPHERY_VERSION="3.2.0"
+          echo "Загружаем Periphery v$PERIPHERY_VERSION..."
+
+          curl -L "https://github.com/peripheryapp/periphery/releases/download/${PERIPHERY_VERSION}/periphery-${PERIPHERY_VERSION}.zip" -o periphery.zip
+          unzip -q periphery.zip
+          sudo mkdir -p /usr/local/bin
+          sudo mv periphery /usr/local/bin/periphery
+          sudo chmod +x /usr/local/bin/periphery
+          rm periphery.zip
+
           echo "Periphery версия: $(periphery version)"
 
       - name: 🗑️ Запуск поиска мертвого кода

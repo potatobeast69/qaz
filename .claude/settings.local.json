@@ -13,7 +13,10 @@
       "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-memory-check /Users/halftime/Desktop/ccdd/qaz --static-analysis --format json --output /tmp/memory-test.json)",
       "Read(//private/tmp/**)",
       "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-dead-code /Users/halftime/Desktop/ccdd/qaz/pa.xcodeproj)",
-      "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-dead-code /Users/halftime/Desktop/ccdd/qaz/pa.xcodeproj --format json --output /tmp/dead-code-test.json)"
+      "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-dead-code /Users/halftime/Desktop/ccdd/qaz/pa.xcodeproj --format json --output /tmp/dead-code-test.json)",
+      "Bash(periphery version)",
+      "Bash(periphery scan --help)",
+      "Bash(brew info peripheryapp/periphery/periphery)"
     ],
     "deny": [],
     "ask": []
