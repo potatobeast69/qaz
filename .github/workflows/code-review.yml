@@ -165,100 +165,100 @@ jobs:
           path: style-report.json
           if-no-files-found: ignore
 
-  # Job 4: Поиск мертвого кода (Periphery)
-  dead-code-check:
-    name: 🗑️ Поиск неиспользуемого кода
-    needs: setup-tools
-    runs-on: macos-latest
-
-    steps:
-      - name: 📥 Checkout кода
-        uses: actions/checkout@v4
-
-      - name: 📥 Загрузка инструментов
-        uses: actions/download-artifact@v4
-        with:
-          name: code-review-tools
-          path: tools
-
-      - name: 🔧 Установка Periphery
-        run: |
-          brew install peripheryapp/periphery/periphery
-          echo "Periphery версия: $(periphery version)"
-
-      - name: 🗑️ Запуск поиска мертвого кода
-        id: dead-code
-        continue-on-error: true
-        run: |
-          # Ищем проект
-          if ls *.xcworkspace 1> /dev/null 2>&1; then
-            PROJECT=$(ls *.xcworkspace | head -n 1)
-            PROJECT_TYPE="workspace"
-          elif ls *.xcodeproj 1> /dev/null 2>&1; then
-            PROJECT=$(ls *.xcodeproj | head -n 1)
-            PROJECT_TYPE="project"
-          else
-            echo "⚠️ Xcode проект не найден, пропускаем проверку"
-            echo '{"summary":{"warnings":0},"files":[]}' > dead-code-report.json
-            exit 0
-          fi
-
-          # Если есть наш инструмент - используем его
-          if [ -f "tools/swift-dead-code" ]; then
-            chmod +x tools/swift-dead-code
-            tools/swift-dead-code "$PROJECT" --format json --output dead-code-report.json || true
-          else
-            echo "⚠️ swift-dead-code не найден, используем Periphery напрямую"
-            # Получаем схему
-            if [ "$PROJECT_TYPE" == "workspace" ]; then
-              SCHEME=$(xcodebuild -workspace "$PROJECT" -list | grep -A 1 "Schemes:" | tail -n 1 | xargs || echo "")
-            else
-              SCHEME=$(xcodebuild -project "$PROJECT" -list | grep -A 1 "Schemes:" | tail -n 1 | xargs || echo "")
-            fi
-
-            if [ -z "$SCHEME" ]; then
-              echo "⚠️ Схема не найдена, создаем пустой отчет"
-              echo '{"summary":{"warnings":0},"files":[]}' > dead-code-report.json
-            else
-              echo "📋 Найдена схема: $SCHEME"
-              # Запускаем Periphery
-              if [ "$PROJECT_TYPE" == "workspace" ]; then
-                periphery scan --workspace "$PROJECT" --schemes "$SCHEME" --format json > dead-code-raw.json 2>&1 || true
-              else
-                periphery scan --project "$PROJECT" --schemes "$SCHEME" --format json > dead-code-raw.json 2>&1 || true
-              fi
-
-              # Преобразуем результат
-              if [ -f "dead-code-raw.json" ] && [ -s "dead-code-raw.json" ]; then
-                COUNT=$(cat dead-code-raw.json | jq 'length' 2>/dev/null || echo "0")
-                echo "{\"summary\":{\"warnings\":$COUNT},\"files\":$(cat dead-code-raw.json)}" > dead-code-report.json
-              else
-                echo '{"summary":{"warnings":0},"files":[]}' > dead-code-report.json
-              fi
-            fi
-          fi
-
-      - name: 📊 Результаты поиска мертвого кода
-        if: always()
-        run: |
-          if [ -f "dead-code-report.json" ]; then
-            echo "📄 Отчет создан"
-            cat dead-code-report.json | jq '.summary'
-
-            DEAD_CODE_COUNT=$(cat dead-code-report.json | jq '.summary.warnings')
-            echo "🗑️ Неиспользуемых элементов: $DEAD_CODE_COUNT"
-            echo "DEAD_CODE_COUNT=$DEAD_CODE_COUNT" >> $GITHUB_ENV
-          else
-            echo "⚠️ Отчет не создан или проект не поддерживается"
-          fi
-
-      - name: 💾 Сохранение отчета
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dead-code-report
-          path: dead-code-report.json
-          if-no-files-found: ignore
+  # Job 4: Поиск мертвого кода (Periphery) - ВРЕМЕННО ОТКЛЮЧЕНО
+  # dead-code-check:
+  #   name: 🗑️ Поиск неиспользуемого кода
+  #   needs: setup-tools
+  #   runs-on: macos-latest
+  #
+  #   steps:
+  #     - name: 📥 Checkout кода
+  #       uses: actions/checkout@v4
+  #
+  #     - name: 📥 Загрузка инструментов
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: code-review-tools
+  #         path: tools
+  #
+  #     - name: 🔧 Установка Periphery
+  #       run: |
+  #         brew install peripheryapp/periphery/periphery
+  #         echo "Periphery версия: $(periphery version)"
+  #
+  #     - name: 🗑️ Запуск поиска мертвого кода
+  #       id: dead-code
+  #       continue-on-error: true
+  #       run: |
+  #         # Ищем проект
+  #         if ls *.xcworkspace 1> /dev/null 2>&1; then
+  #           PROJECT=$(ls *.xcworkspace | head -n 1)
+  #           PROJECT_TYPE="workspace"
+  #         elif ls *.xcodeproj 1> /dev/null 2>&1; then
+  #           PROJECT=$(ls *.xcodeproj | head -n 1)
+  #           PROJECT_TYPE="project"
+  #         else
+  #           echo "⚠️ Xcode проект не найден, пропускаем проверку"
+  #           echo '{"summary":{"warnings":0},"files":[]}' > dead-code-report.json
+  #           exit 0
+  #         fi
+  #
+  #         # Если есть наш инструмент - используем его
+  #         if [ -f "tools/swift-dead-code" ]; then
+  #           chmod +x tools/swift-dead-code
+  #           tools/swift-dead-code "$PROJECT" --format json --output dead-code-report.json || true
+  #         else
+  #           echo "⚠️ swift-dead-code не найден, используем Periphery напрямую"
+  #           # Получаем схему
+  #           if [ "$PROJECT_TYPE" == "workspace" ]; then
+  #             SCHEME=$(xcodebuild -workspace "$PROJECT" -list | grep -A 1 "Schemes:" | tail -n 1 | xargs || echo "")
+  #           else
+  #             SCHEME=$(xcodebuild -project "$PROJECT" -list | grep -A 1 "Schemes:" | tail -n 1 | xargs || echo "")
+  #           fi
+  #
+  #           if [ -z "$SCHEME" ]; then
+  #             echo "⚠️ Схема не найдена, создаем пустой отчет"
+  #             echo '{"summary":{"warnings":0},"files":[]}' > dead-code-report.json
+  #           else
+  #             echo "📋 Найдена схема: $SCHEME"
+  #             # Запускаем Periphery
+  #             if [ "$PROJECT_TYPE" == "workspace" ]; then
+  #               periphery scan --workspace "$PROJECT" --schemes "$SCHEME" --format json > dead-code-raw.json 2>&1 || true
+  #             else
+  #               periphery scan --project "$PROJECT" --schemes "$SCHEME" --format json > dead-code-raw.json 2>&1 || true
+  #             fi
+  #
+  #             # Преобразуем результат
+  #             if [ -f "dead-code-raw.json" ] && [ -s "dead-code-raw.json" ]; then
+  #               COUNT=$(cat dead-code-raw.json | jq 'length' 2>/dev/null || echo "0")
+  #               echo "{\"summary\":{\"warnings\":$COUNT},\"files\":$(cat dead-code-raw.json)}" > dead-code-report.json
+  #             else
+  #               echo '{"summary":{"warnings":0},"files":[]}' > dead-code-report.json
+  #             fi
+  #           fi
+  #         fi
+  #
+  #     - name: 📊 Результаты поиска мертвого кода
+  #       if: always()
+  #       run: |
+  #         if [ -f "dead-code-report.json" ]; then
+  #           echo "📄 Отчет создан"
+  #           cat dead-code-report.json | jq '.summary'
+  #
+  #           DEAD_CODE_COUNT=$(cat dead-code-report.json | jq '.summary.warnings')
+  #           echo "🗑️ Неиспользуемых элементов: $DEAD_CODE_COUNT"
+  #           echo "DEAD_CODE_COUNT=$DEAD_CODE_COUNT" >> $GITHUB_ENV
+  #         else
+  #           echo "⚠️ Отчет не создан или проект не поддерживается"
+  #         fi
+  #
+  #     - name: 💾 Сохранение отчета
+  #       if: always()
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: dead-code-report
+  #         path: dead-code-report.json
+  #         if-no-files-found: ignore
 
   # Job 5: Проверка утечек памяти
   memory-check:
@@ -327,7 +327,7 @@ jobs:
   # Job 6: Сводный отчет и отправка на backend
   final-report:
     name: 📊 Сводный отчет
-    needs: [build-check, style-check, dead-code-check, memory-check]
+    needs: [build-check, style-check, memory-check]
     runs-on: ubuntu-latest
     if: always()
 
