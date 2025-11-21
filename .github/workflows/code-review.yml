@@ -48,27 +48,16 @@ jobs:
             WORKSPACE_NAME=$(basename "$WORKSPACE")
             SCHEME=$(xcodebuild -workspace "$WORKSPACE_NAME" -list | grep -A 1 "Schemes:" | tail -n 1 | xargs)
             echo "🔨 Собираю workspace: $WORKSPACE_NAME, схема: $SCHEME"
-
-            # Находим любой доступный iOS симулятор
-            SIMULATOR=$(xcrun simctl list devices available | grep "iPhone" | head -n 1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
-
             xcodebuild -workspace "$WORKSPACE_NAME" -scheme "$SCHEME" \
-              -sdk iphonesimulator \
-              -destination "platform=iOS Simulator,id=$SIMULATOR" \
+              -destination "platform=iOS Simulator,name=iPhone 16" \
               -configuration Debug clean build
           elif find . -maxdepth 1 -name "*.xcodeproj" | grep -q .; then
             PROJECT=$(find . -maxdepth 1 -name "*.xcodeproj" | head -n 1)
             PROJECT_NAME=$(basename "$PROJECT")
             SCHEME=$(xcodebuild -project "$PROJECT_NAME" -list | grep -A 1 "Schemes:" | tail -n 1 | xargs)
             echo "🔨 Собираю проект: $PROJECT_NAME, схема: $SCHEME"
-
-            # Находим любой доступный iOS симулятор
-            SIMULATOR=$(xcrun simctl list devices available | grep "iPhone" | head -n 1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
-            echo "📱 Используемый симулятор ID: $SIMULATOR"
-
             xcodebuild -project "$PROJECT_NAME" -scheme "$SCHEME" \
-              -sdk iphonesimulator \
-              -destination "platform=iOS Simulator,id=$SIMULATOR" \
+              -destination "platform=iOS Simulator,name=iPhone 16" \
               -configuration Debug clean build
           else
             echo "❌ Swift проект не найден"
