@@ -11,7 +11,9 @@
       "Read(//Users/halftime/Desktop/dodelivaem111/**)",
       "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-memory-check /Users/halftime/Desktop/ccdd/qaz --static-analysis)",
       "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-memory-check /Users/halftime/Desktop/ccdd/qaz --static-analysis --format json --output /tmp/memory-test.json)",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-dead-code /Users/halftime/Desktop/ccdd/qaz/pa.xcodeproj)",
+      "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-dead-code /Users/halftime/Desktop/ccdd/qaz/pa.xcodeproj --format json --output /tmp/dead-code-test.json)"
     ],
     "deny": [],
     "ask": []
