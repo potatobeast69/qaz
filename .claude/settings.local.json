@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild -project sasas11.xcodeproj -list)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
