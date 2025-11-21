@@ -39,10 +39,7 @@ cyclomatic_complexity:
 
 # Количество вложенных типов
 nesting:
-  type_level:
-    warning: 2
-  statement_level:
-    warning: 5
+  type_level: 2
 
 # Исключенные директории
 excluded:
@@ -51,11 +48,9 @@ excluded:
   - DerivedData
   - Carthage
   - vendor
-
-# Включенные директории (где искать Swift файлы)
-included:
-  - Sources
-  - Tests
+  - .github
+  - scripts
+  - tools
 
 # Форматирование для отчетов
 reporter: "json"  # используется в GitHub Actions

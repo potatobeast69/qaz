@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(xcodebuild -project sasas11.xcodeproj -list)",
-      "Bash(xcodebuild -project sasas11.xcodeproj -scheme sasas11 -destination \"platform=iOS Simulator,name=iPhone 16\" clean build)"
+      "Bash(xcodebuild -project sasas11.xcodeproj -scheme sasas11 -destination \"platform=iOS Simulator,name=iPhone 16\" clean build)",
+      "Bash(swiftlint lint --path sasas11/)",
+      "Bash(swiftlint lint)",
+      "Bash(swiftlint lint sasas11/)",
+      "Bash(swiftlint version)",
+      "Bash(swiftlint lint pa/AppCore/PolarisApp.swift)",
+      "Read(//Users/halftime/Desktop/dodelivaem111/**)",
+      "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-memory-check /Users/halftime/Desktop/ccdd/qaz --static-analysis)",
+      "Bash(/Users/halftime/Desktop/dodelivaem111/.build/release/swift-memory-check /Users/halftime/Desktop/ccdd/qaz --static-analysis --format json --output /tmp/memory-test.json)",
+      "Read(//private/tmp/**)"
     ],
     "deny": [],
     "ask": []

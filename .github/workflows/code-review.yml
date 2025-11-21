@@ -285,16 +285,8 @@ jobs:
             tools/swift-memory-check . --static-analysis --format json --output memory-report.json || true
           else
             echo "⚠️ swift-memory-check не найден"
-            echo "💡 Выполняем базовую проверку на retain cycles в коде..."
-
-            # Простая проверка на потенциальные retain cycles
-            RETAIN_ISSUES=0
-
-            # Ищем [weak self] и [unowned self]
-            echo "Проверка использования [weak self] и [unowned self]..."
-
-            # Создаем базовый отчет
-            echo "{\"summary\":{\"errors\":0,\"warnings\":$RETAIN_ISSUES},\"files\":[]}" > memory-report.json
+            echo "⚠️ Проверка памяти пропущена - требуется инструмент из репозитория"
+            echo '{"summary":{"errors":0,"warnings":0,"infos":0},"issues":[]}' > memory-report.json
           fi
 
       - name: 📊 Результаты проверки памяти
