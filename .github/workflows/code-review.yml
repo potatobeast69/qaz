@@ -190,12 +190,20 @@ jobs:
         id: dead-code
         continue-on-error: true
         run: |
-          # Ищем проект
-          if ls *.xcworkspace 1> /dev/null 2>&1; then
-            PROJECT=$(ls *.xcworkspace | head -n 1)
-          elif ls *.xcodeproj 1> /dev/null 2>&1; then
-            PROJECT=$(ls *.xcodeproj | head -n 1)
-          else
+          # Ищем проект (используем find для надёжности)
+          PROJECT=""
+
+          # Сначала ищем workspace
+          if [ -n "$(find . -maxdepth 1 -name "*.xcworkspace" -type d)" ]; then
+            PROJECT=$(find . -maxdepth 1 -name "*.xcworkspace" -type d | head -n 1)
+            echo "✅ Найден workspace: $PROJECT"
+          # Потом ищем xcodeproj
+          elif [ -n "$(find . -maxdepth 1 -name "*.xcodeproj" -type d)" ]; then
+            PROJECT=$(find . -maxdepth 1 -name "*.xcodeproj" -type d | head -n 1)
+            echo "✅ Найден проект: $PROJECT"
+          fi
+
+          if [ -z "$PROJECT" ]; then
             echo "⚠️ Xcode проект не найден, пропускаем проверку"
             echo '{"summary":{"errors":0,"warnings":0,"infos":0},"issues":[]}' > dead-code-report.json
             exit 0
